@@ -96,17 +96,25 @@ def test_get_netrc_auth_with_default():
     )
 
 
-def test_repository_repr_does_not_expose_credentials():
+@pytest.mark.parametrize(
+    ("password", "expected"),
+    [
+        ("short123", "***"),
+        ("abcdefghijkl", "abc***jkl"),
+        ("my-very-secret-password", "my-***ord"),
+    ],
+)
+def test_repository_repr_masks_password(password, expected):
     repo = PypiSimpleRepository(
         index_url="https://example.com/simple/",
-        credentials={"login": "test-user", "password": "test-secret"},
+        credentials={"login": "test-user", "password": password},
     )
 
     repo_repr = repr(repo)
 
-    assert "test-user" not in repo_repr
-    assert "test-secret" not in repo_repr
-    assert "credentials" not in repo_repr
+    assert "test-user" in repo_repr
+    assert expected in repo_repr
+    assert password not in repo_repr
 
 
 @pytest.mark.asyncio
