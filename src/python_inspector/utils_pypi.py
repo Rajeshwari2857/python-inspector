@@ -1502,7 +1502,7 @@ class PypiSimpleRepository:
         repr=False,
     )
 
-    credentials = attr.ib(type=dict, default=None)
+    credentials = attr.ib(type=dict, default=None, repr=False)
 
     async def _get_package_versions_map(
         self,

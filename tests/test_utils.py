@@ -96,6 +96,19 @@ def test_get_netrc_auth_with_default():
     )
 
 
+def test_repository_repr_does_not_expose_credentials():
+    repo = PypiSimpleRepository(
+        index_url="https://example.com/simple/",
+        credentials={"login": "test-user", "password": "test-secret"},
+    )
+
+    repo_repr = repr(repo)
+
+    assert "test-user" not in repo_repr
+    assert "test-secret" not in repo_repr
+    assert "credentials" not in repo_repr
+
+
 @pytest.mark.asyncio
 @pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python3.8 or higher")
 @mock.patch("python_inspector.utils_pypi.CACHE.get")
